@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Manager</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        input,
+        select,
+        button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .form-section h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            /* margin: 5px 0; */
+            padding: 3px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px;
+        }
+
+        li:hover {
+            background-color: rgb(212, 212, 212);
+        }
+
+        li div {
+            font-size: 18px;
+
+        }
+
+        li button {
+            width: 100px;
+            cursor: pointer;
+        }
+
+        .display-data {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid black;
+        }
+
+        .display-data .title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .display-data .buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .display-data .buttons button {
+            width: unset;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Music Manager</h1>
+
+    <!-- Add Artist -->
+    <div class="form-section">
+        <h2>Add Artist</h2>
+        <label for="artistName">Artist Name:</label>
+        <input type="text" id="artistName">
+        <button onclick="addArtist()">Add Artist</button>
+    </div>
+
+    <!-- Add Genre -->
+    <div class="form-section">
+        <h2>Add Genre</h2>
+        <label for="genreName">Genre Name:</label>
+        <input type="text" id="genreName">
+        <button onclick="addGenre()">Add Genre</button>
+    </div>
+
+    <!-- Add Album -->
+    <div class="form-section">
+        <h2>Add Album</h2>
+        <label for="albumName">Album Name:</label>
+        <input type="text" id="albumName">
+        <label for="albumYear">Release Year:</label>
+        <input type="number" id="albumYear">
+        <button onclick="addAlbum()">Add Album</button>
+    </div>
+
+    <!-- Add Track -->
+    <div class="form-section">
+        <h2>Add Track</h2>
+        <label for="trackTitle">Track Title:</label>
+        <input type="text" id="trackTitle">
+        <label for="trackDuration">Track Duration:</label>
+        <input type="time" id="trackDuration">
+        <label for="trackArtist">Select Artist:</label>
+        <select id="trackArtist"></select>
+        <label for="trackAlbum">Select Album:</label>
+        <select id="trackAlbum"></select>
+        <label for="albumGenre">Select Genre:</label>
+        <select id="albumGenre"></select>
+        <button onclick="addTrack()">Add Track</button>
+    </div>
+
+    <!-- Display Data -->
+    <div class="form-section">
+        <div class="display-data">
+            <div class="title">Display Data</div>
+            <div class="buttons">
+                <button onclick="clearFilters()">Clear Filters</button>
+                <button onclick="fetchData()">Refresh Data</button>
+            </div>
+        </div>
+
+        <div id="dataDisplay"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
