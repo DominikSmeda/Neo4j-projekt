@@ -56,20 +56,30 @@ exports.addTrack = async (req, res) => {
 
 exports.getTracksByArtist = async (req, res) => {
     const { artistName } = req.params;
-    const session = driver.session();
+    const session = req.neo4jDriver.session();
 
     try {
         const result = await session.run(
             `
-        MATCH (ar:Artist {name: $artistName})<-[:PERFORMED_BY]-(t:Track)-[:PART_OF]->(a:Album)
-        RETURN t.title AS trackTitle, a.title AS albumName
-        `,
+            MATCH (ar:Artist {name: $artistName})<-[:PERFORMED_BY]-(t:Track)
+            OPTIONAL MATCH (t)-[:PART_OF]->(a:Album)
+            OPTIONAL MATCH (t)-[:BELONGS_TO]->(g:Genre)
+            RETURN 
+                t.title AS trackTitle, 
+                t.duration AS trackDuration, 
+                ar.name AS artistName, 
+                a.title AS albumName, 
+                g.name AS genreName
+            `,
             { artistName }
         );
 
         const tracks = result.records.map(record => ({
             title: record.get('trackTitle'),
+            duration: record.get('trackDuration'),
+            artist: record.get('artistName'),
             album: record.get('albumName'),
+            genre: record.get('genreName'),
         }));
 
         res.status(200).json(tracks);
@@ -83,20 +93,30 @@ exports.getTracksByArtist = async (req, res) => {
 
 exports.getTracksByGenre = async (req, res) => {
     const { genreName } = req.params;
-    const session = driver.session();
+    const session = req.neo4jDriver.session();
 
     try {
         const result = await session.run(
             `
-        MATCH (g:Genre {name: $genreName})<-[:BELONGS_TO]-(a:Album)<-[:PART_OF]-(t:Track)
-        RETURN t.title AS trackTitle, a.name AS albumName
-        `,
+            MATCH (g:Genre {name: $genreName})<-[:BELONGS_TO]-(t:Track)
+            OPTIONAL MATCH (t)-[:PART_OF]->(a:Album)
+            OPTIONAL MATCH (t)-[:PERFORMED_BY]->(ar:Artist)
+            RETURN 
+                t.title AS trackTitle, 
+                t.duration AS trackDuration, 
+                ar.name AS artistName, 
+                a.title AS albumName, 
+                g.name AS genreName
+            `,
             { genreName }
         );
 
         const tracks = result.records.map(record => ({
             title: record.get('trackTitle'),
+            duration: record.get('trackDuration'),
+            artist: record.get('artistName'),
             album: record.get('albumName'),
+            genre: record.get('genreName'),
         }));
 
         res.status(200).json(tracks);
@@ -110,19 +130,30 @@ exports.getTracksByGenre = async (req, res) => {
 
 exports.getTracksByAlbum = async (req, res) => {
     const { albumName } = req.params;
-    const session = driver.session();
-
+    const session = req.neo4jDriver.session();
+    console.log(albumName)
     try {
         const result = await session.run(
             `
-        MATCH (a:Album {name: $albumName})<-[:PART_OF]-(t:Track)
-        RETURN t.title AS trackTitle
-        `,
+            MATCH (al:Album {title: $albumName})<-[:PART_OF]-(t:Track)
+            OPTIONAL MATCH (t)-[:PERFORMED_BY]->(a:Artist)
+            OPTIONAL MATCH (t)-[:BELONGS_TO]->(g:Genre)
+            RETURN 
+                t.title AS trackTitle, 
+                t.duration AS trackDuration, 
+                a.name AS artistName, 
+                g.name AS genreName
+            `,
             { albumName }
         );
 
+        console.log(result)
         const tracks = result.records.map(record => ({
             title: record.get('trackTitle'),
+            duration: record.get('trackDuration'),
+            artist: record.get('artistName') || 'Unknown',
+            genre: record.get('genreName') || 'Unknown',
+            album: albumName
         }));
 
         res.status(200).json(tracks);

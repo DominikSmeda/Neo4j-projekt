@@ -31,7 +31,7 @@ async function addArtist() {
         body: JSON.stringify({ name })
     });
     alert('Artist added successfully');
-    refreshDropdowns();
+    refresh();
 }
 
 // Add Genre
@@ -44,7 +44,7 @@ async function addGenre() {
         body: JSON.stringify({ name })
     });
     alert('Genre added successfully');
-    refreshDropdowns();
+    refresh();
 }
 
 // Add Album
@@ -59,7 +59,7 @@ async function addAlbum() {
         body: JSON.stringify({ title, releaseYear })
     });
     alert('Album added successfully');
-    refreshDropdowns();
+    refresh();
 }
 
 // Add Track
@@ -76,7 +76,7 @@ async function addTrack() {
         body: JSON.stringify({ title, artist, album, genre, duration })
     });
     alert('Track added successfully');
-    refreshDropdowns();
+    refresh();
 }
 
 // Fetch and display data
@@ -91,11 +91,11 @@ async function fetchData() {
     const dataDisplay = document.getElementById('dataDisplay');
     dataDisplay.innerHTML = `
     <h3>Artists</h3>
-    <ul>${artists.map(a => `<li><div>${a.name}</div> <button onclick="removeArtist('${a.name}')">Remove</button></li>`).join('')}</ul>
+    <ul>${artists.map(a => `<li onclick="tracksByArtist('${a.name}')"><div>${a.name}</div> <button onclick="removeArtist('${a.name}')">Remove</button></li>`).join('')}</ul>
     <h3>Genres</h3>
-    <ul>${genres.map(g => `<li><div>${g.name}</div> <button onclick="removeGenre('${g.name}')">Remove</button></li>`).join('')}</ul>
+    <ul>${genres.map(g => `<li onclick="tracksByGenre('${g.name}')"><div>${g.name}</div> <button onclick="removeGenre('${g.name}')">Remove</button></li>`).join('')}</ul>
     <h3>Albums</h3>
-    <ul>${albums.map(a => `<li><div>${a.title} (Release Year: ${a.releaseYear})</div> <button onclick="removeAlbum('${a.title}')">Remove</button></li>`).join('')}</ul>
+    <ul>${albums.map(a => `<li onclick="tracksByAlbum('${a.title}')"><div>${a.title} (Release Year: ${a.releaseYear})</div> <button onclick="removeAlbum('${a.title}')">Remove</button></li>`).join('')}</ul>
     <h3>Tracks</h3>
     <ul>${tracks.map(t => `<li><div>${t.title} - ${t.duration} (Artist: ${t.artist}, Album: ${t.album}, Genre: ${t.genre})</div> <button onclick="removeTrack('${t.title}')">Remove</button></li>`).join('')}</ul>
   `;
@@ -108,7 +108,7 @@ async function removeArtist(name) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Artist removed successfully');
-    fetchData(); // Refresh the data display
+    refresh(); // Refresh the data display
 }
 
 // Remove Genre
@@ -118,7 +118,7 @@ async function removeGenre(name) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Genre removed successfully');
-    fetchData(); // Refresh the data display
+    refresh(); // Refresh the data display
 }
 
 // Remove Album
@@ -128,7 +128,7 @@ async function removeAlbum(title) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Album removed successfully');
-    fetchData(); // Refresh the data display
+    refresh(); // Refresh the data display
 }
 
 // Remove Track
@@ -138,11 +138,47 @@ async function removeTrack(title) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Track removed successfully');
-    fetchData(); // Refresh the data display
+    refresh(); // Refresh the data display
 }
 
+async function tracksByArtist(artist) {
+    console.log(artist)
+    const tracks = await fetch(`${API_URL}/tracks/by-artist/${artist}`).then(res => res.json());
+    console.log(tracks);
+    const dataDisplay = document.getElementById('dataDisplayTracks');
+    dataDisplay.innerHTML = `
+    <h3>Tracks performed by: ${artist}</h3>
+    <ul>${tracks.map(t => `<li><div>${t.title} - ${t.duration} (Album: ${t.album}, Genre: ${t.genre})</div> <button onclick="removeTrack('${t.title}')">Remove</button></li>`).join('')}</ul>
+  `;
+}
+
+async function tracksByGenre(genre) {
+    const tracks = await fetch(`${API_URL}/tracks/by-genre/${genre}`).then(res => res.json());
+    console.log(tracks);
+    const dataDisplay = document.getElementById('dataDisplayTracks');
+    dataDisplay.innerHTML = `
+    <h3>Tracks belong to: ${genre}</h3>
+    <ul>${tracks.map(t => `<li><div>${t.title} - ${t.duration} (Artist: ${t.artist}, Album: ${t.album})</div> <button onclick="removeTrack('${t.title}')">Remove</button></li>`).join('')}</ul>
+  `;
+}
+
+async function tracksByAlbum(album) {
+    const tracks = await fetch(`${API_URL}/tracks/by-album/${album}`).then(res => res.json());
+    console.log(tracks);
+    const dataDisplay = document.getElementById('dataDisplayTracks');
+    dataDisplay.innerHTML = `
+    <h3>Tracks part of: ${album}</h3>
+    <ul>${tracks.map(t => `<li><div>${t.title} - ${t.duration} (Artist: ${t.artist}, Genre: ${t.genre})</div> <button onclick="removeTrack('${t.title}')">Remove</button></li>`).join('')}</ul>
+  `;
+}
 
 // Initialize dropdowns on load
-refreshDropdowns();
+
+function refresh() {
+    fetchData();
+    refreshDropdowns();
+}
+
+refresh();
 
 
