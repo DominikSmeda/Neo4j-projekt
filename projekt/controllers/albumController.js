@@ -37,7 +37,7 @@ exports.addAlbum = async (req, res) => {
 };
 
 exports.deleteAlbum = async (req, res) => {
-    const { title } = req.params; // Assuming the album title is passed as a URL parameter
+    const { title } = req.params;
     const session = req.neo4jDriver.session();
 
     try {

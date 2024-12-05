@@ -29,7 +29,7 @@ exports.addGenre = async (req, res) => {
 };
 
 exports.deleteGenre = async (req, res) => {
-    const { name } = req.params; // Assuming the genre name is passed as a URL parameter
+    const { name } = req.params;
     const session = req.neo4jDriver.session();
 
     try {

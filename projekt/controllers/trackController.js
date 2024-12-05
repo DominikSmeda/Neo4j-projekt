@@ -166,7 +166,7 @@ exports.getTracksByAlbum = async (req, res) => {
 };
 
 exports.deleteTrack = async (req, res) => {
-    const { title } = req.params; // Assuming the track title is passed as a URL parameter
+    const { title } = req.params;
     const session = req.neo4jDriver.session();
 
     try {

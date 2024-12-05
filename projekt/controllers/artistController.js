@@ -29,7 +29,7 @@ exports.addArtist = async (req, res) => {
 };
 
 exports.deleteArtist = async (req, res) => {
-    const { name } = req.params; // Assuming the artist name is passed as a URL parameter
+    const { name } = req.params;
     const session = req.neo4jDriver.session();
 
     try {

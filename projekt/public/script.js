@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api'; // Adjust based on your backend's URL
+const API_URL = '/api';
 
 // Populate dropdowns
 async function refreshDropdowns() {
@@ -8,15 +8,12 @@ async function refreshDropdowns() {
         fetch(`${API_URL}/albums`).then(res => res.json())
     ]);
 
-    // Populate genre dropdown for albums
     const genreDropdown = document.getElementById('albumGenre');
     genreDropdown.innerHTML = genres.map(genre => `<option value="${genre.name}">${genre.name}</option>`).join('');
 
-    // Populate artist dropdown for tracks
     const artistDropdown = document.getElementById('trackArtist');
     artistDropdown.innerHTML = artists.map(artist => `<option value="${artist.name}">${artist.name}</option>`).join('');
 
-    // Populate album dropdown for tracks
     const albumDropdown = document.getElementById('trackAlbum');
     albumDropdown.innerHTML = albums.map(album => `<option value="${album.title}">${album.title} (${album.releaseYear})</option>`).join('');
 }
@@ -50,7 +47,6 @@ async function addGenre() {
 // Add Album
 async function addAlbum() {
     const title = document.getElementById('albumName').value.trim();
-    // const genre = document.getElementById('albumGenre').value;
     const releaseYear = document.getElementById('albumYear').value;
     if (!title || !releaseYear) return alert('Album name and genre are required');
     await fetch(`${API_URL}/albums`, {
@@ -108,7 +104,7 @@ async function removeArtist(name) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Artist removed successfully');
-    refresh(); // Refresh the data display
+    refresh();
 }
 
 // Remove Genre
@@ -118,7 +114,7 @@ async function removeGenre(name) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Genre removed successfully');
-    refresh(); // Refresh the data display
+    refresh();
 }
 
 // Remove Album
@@ -128,7 +124,7 @@ async function removeAlbum(title) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Album removed successfully');
-    refresh(); // Refresh the data display
+    refresh();
 }
 
 // Remove Track
@@ -138,7 +134,7 @@ async function removeTrack(title) {
         headers: { 'Content-Type': 'application/json' }
     });
     alert('Track removed successfully');
-    refresh(); // Refresh the data display
+    refresh();
 }
 
 async function tracksByArtist(artist) {
@@ -172,7 +168,6 @@ async function tracksByAlbum(album) {
   `;
 }
 
-// Initialize dropdowns on load
 
 function refresh() {
     fetchData();
